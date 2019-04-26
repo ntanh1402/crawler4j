@@ -1,9 +1,11 @@
 .DS_STORE
 .gradle
 build
+out
 
 # IntelliJ IDEA
 **/*.iml
+.idea
 
 # Eclipse
 .classpath

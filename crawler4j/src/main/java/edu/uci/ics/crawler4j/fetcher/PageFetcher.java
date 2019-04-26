@@ -253,12 +253,17 @@ public class PageFetcher {
 
     public PageFetchResult fetchPage(WebURL webUrl)
             throws InterruptedException, IOException, PageBiggerThanMaxSizeException {
+        return fetchPage(webUrl, webUrl.getURL());
+    }
+
+    public PageFetchResult fetchPage(WebURL webUrl, String realUrlToFetch)
+            throws InterruptedException, IOException, PageBiggerThanMaxSizeException {
         // Getting URL, setting headers & content
         PageFetchResult fetchResult = new PageFetchResult(config.isHaltOnError());
         String toFetchURL = webUrl.getURL();
         HttpUriRequest request = null;
         try {
-            request = newHttpUriRequest(toFetchURL);
+            request = newHttpUriRequest(realUrlToFetch);
             if (config.getPolitenessDelay() > 0) {
                 // Applying Politeness delay
                 synchronized (mutex) {
@@ -295,7 +300,7 @@ public class PageFetcher {
             } else if (statusCode >= 200 && statusCode <= 299) { // is 2XX, everything looks ok
                 fetchResult.setFetchedUrl(toFetchURL);
                 String uri = request.getURI().toString();
-                if (!uri.equals(toFetchURL)) {
+                if (!uri.equals(toFetchURL) && !uri.equals(realUrlToFetch)) {
                     if (!URLCanonicalizer.getCanonicalURL(uri).equals(toFetchURL)) {
                         fetchResult.setFetchedUrl(uri);
                     }

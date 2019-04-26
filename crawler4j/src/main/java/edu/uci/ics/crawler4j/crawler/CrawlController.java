@@ -267,7 +267,12 @@ public class CrawlController {
     }
 
     protected <T extends WebCrawler> void start(final WebCrawlerFactory<T> crawlerFactory,
-                                                final int numberOfCrawlers, boolean isBlocking) {
+            final int numberOfCrawlers, boolean isBlocking) {
+        start(crawlerFactory, numberOfCrawlers, isBlocking, "Crawler ");
+    }
+
+    protected <T extends WebCrawler> void start(final WebCrawlerFactory<T> crawlerFactory,
+            final int numberOfCrawlers, boolean isBlocking, String threadNamePrefix) {
         try {
             finished = false;
             setError(null);
@@ -277,7 +282,7 @@ public class CrawlController {
 
             for (int i = 1; i <= numberOfCrawlers; i++) {
                 T crawler = crawlerFactory.newInstance();
-                Thread thread = new Thread(crawler, "Crawler " + i);
+                Thread thread = new Thread(crawler, threadNamePrefix + i);
                 crawler.setThread(thread);
                 crawler.init(i, this);
                 thread.start();
