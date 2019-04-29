@@ -297,6 +297,16 @@ public class WebCrawler implements Runnable {
     }
 
     /**
+     * This function is called if there has been an not allowed content error
+     *
+     * @param webUrl URL which failed on parsing
+     */
+    protected void onNotAllowedContentException(WebURL webUrl) {
+        logger.debug("Skipping: {} as it contains binary content " +
+                     "which you configured not to crawl", webUrl.getURL());
+    }
+
+    /**
      * The CrawlController instance that has created this crawler instance will
      * call this function just before terminating this crawler thread. Classes
      * that extend WebCrawler can override this function to pass their local
@@ -572,9 +582,7 @@ public class WebCrawler implements Runnable {
             onContentFetchError(curURL);
             onContentFetchError(page);
         } catch (NotAllowedContentException nace) {
-            logger.debug(
-                "Skipping: {} as it contains binary content which you configured not to crawl",
-                curURL.getURL());
+            onNotAllowedContentException(curURL);
         } catch (IOException | InterruptedException | RuntimeException e) {
             onUnhandledException(curURL, e);
         } finally {
