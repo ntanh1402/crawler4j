@@ -220,14 +220,14 @@ public class WebCrawler implements Runnable {
      * This function is called if the crawler encountered an unexpected http status code ( a
      * status code other than 3xx)
      *
-     * @param urlStr URL in which an unexpected error was encountered while crawling
+     * @param webUrl URL in which an unexpected error was encountered while crawling
      * @param statusCode Html StatusCode
      * @param contentType Type of Content
      * @param description Error Description
      */
-    protected void onUnexpectedStatusCode(String urlStr, int statusCode, String contentType,
+    protected void onUnexpectedStatusCode(WebURL webUrl, int statusCode, String contentType,
                                           String description) {
-        logger.warn("Skipping URL: {}, StatusCode: {}, {}, {}", urlStr, statusCode, contentType,
+        logger.warn("Skipping URL: {}, StatusCode: {}, {}, {}", webUrl.getURL(), statusCode, contentType,
                     description);
         // Do nothing by default (except basic logging)
         // Sub-classed can override this to add their custom functionality
@@ -494,7 +494,7 @@ public class WebCrawler implements Runnable {
                     String contentType = fetchResult.getEntity() == null ? "" :
                                          fetchResult.getEntity().getContentType() == null ? "" :
                                          fetchResult.getEntity().getContentType().getValue();
-                    onUnexpectedStatusCode(curURL.getURL(), fetchResult.getStatusCode(),
+                    onUnexpectedStatusCode(curURL, fetchResult.getStatusCode(),
                                            contentType, description);
                 }
 
